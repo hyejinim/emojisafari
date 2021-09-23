@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Lab1: Emoji Safari by Hyejin Im</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type = "text/javascript">
+    // Globals variables
+		var c, gc;
+    var animals = [];
+    var trees = [];
+    var selected = null;
+
+    // <!-- onload Function -->
+    window.onload = function() {
+      // Set up canvas
+      c = document.getElementById("MyCanvas");
+      gc = c.getContext("2d");
+      c.width = window.innerWidth - 15;
+      c.height = window.innerHeight * 2.8/4;
+
+      // Draw background
+      update();
+
+      // Draw trees
+      for (var i = 0; i < 10; i++) {
+        var tr = new Tree("Tree");
+        trees.push(tr);
+        tr.draw(gc);
+      }
+
+      // Add buttons
+      new MoveButton("Left ⬅ ");
+      new MoveButton("Down ⬇");
+      new MoveButton("Up ⬆");
+      new MoveButton("Right ➡");
+    }
+
+    // <!-- Class -->
+    class Tree {
+      constructor() {
+        var treeType = [];
+        treeType.push("🌲", "🌳");
+        var randomTree = treeType[Math.floor(Math.random()*treeType.length)];
+
+        this.emoji = randomTree;
+        this.size = Math.random() * 90;
+        this.x = Math.random() * c.width;
+        this.y = Math.random() * c.height;
+      }
+      draw(context) {
+       context.font = (this.size)+"px Helvetica";
+       context.fillText(this.emoji, this.x, this.y);
+      }
+      setPosition(x,y){
+        this.x = x;
+        this.y = y;
+      }
+    }
+
+    class Animal {
+      constructor() {
+        this.emoji = "?";
+        this.size = 40;
+        this.speed = this.size/3;
+        this.x = Math.random()*c.width;
+        this.y = Math.random()*c.height;
+      }
+
+      draw(context) {
+        context.font = (this.size)+"px Helvetica";
+        context.fillText(this.emoji, this.x - (this.size / 2), this.y + (this.size / 2));
+      }
+      setPosition(x,y){
+        this.x = x;
+        this.y = y;
+      }
+    }
+
+    class Tiger extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐅";
+        this.size = 3 * this.size;
+      }
+    }
+
+    class Leopard extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐆";
+        this.size = 2.5 * this.size;
+      }
+    }
+
+    class Buffalo extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐃";
+        this.size = 3 * this.size;
+      }
+    }
+
+    class Ox extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐂";
+        this.size = 3 * this.size;
+      }
+    }
+
+    class Pig extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐖";
+        this.size = 2 * this.size;
+      }
+    }
+
+    class Eagle extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🦅";
+        this.size = 2 * this.size;
+      }
+    }
+
+    class Owl extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🦉";
+        this.size = 1.5 * this.size;
+      }
+    }
+
+    class Monkey extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐒";
+        this.size = 1.5 * this.size;
+      }
+    }
+
+    class Goat extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐐";
+        this.size = 2 * this.size;
+      }
+    }
+
+    class Rhino extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🦏";
+        this.size = 3 * this.size;
+      }
+    }
+
+    class Crocodile extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐊 ";
+        this.size = 2 * this.size;
+        this.x =  Math.random()*(c.width-this.size);
+        this.y =  Math.random()*(c.height-this.size) + this.size;
+      }
+    }
+
+    class Gorilla extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🦍";
+        this.size = 2 * this.size;
+      }
+    }
+
+    class BabyChick extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐥";
+        this.size = 1 * this.size;
+      }
+    }
+
+    class Elephant extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐘";
+        this.size = 4 * this.size;
+      }
+    }
+
+    class Ewe extends Animal {
+      constructor() {
+        super();
+        this.emoji = "🐑";
+        this.size = 1.5 * this.size;
+      }
+    }
+
+    class MoveButton {
+      constructor(label) {
+        this.button = document.createElement("input");
+        this.button.setAttribute("type", "button");
+        this.button.setAttribute("value", label);
+        document.getElementById("buttonarea").appendChild(this.button);
+
+        var self = this;
+        this.button.onclick = function() {
+          self.callback();
+        }
+
+      }
+
+      callback() {
+        var label = this.button.value;
+
+        document.getElementById("statusmsg").innerHTML =
+          "'" + this.button.value + "'" + " button" + " was pushed";
+
+        if (label == "Left ⬅ ") {
+          selected.setPosition(selected.x - selected.speed, selected.y);
+        } else if (label == "Right ➡") {
+          selected.setPosition(selected.x + selected.speed, selected.y);
+        } else if (label == "Down ⬇") {
+          selected.setPosition(selected.x, selected.y + selected.speed);
+        } else if (label == "Up ⬆") {
+          selected.setPosition(selected.x, selected.y - selected.speed);
+        }
+
+        update();
+      }
+    }
+
+    <!-- Function -->
+    function drawBackground() {
+      var gc = c.getContext("2d");
+
+      gc.fillStyle = "#ffc20e";
+      gc.fillRect(0, 0, c.width, c.height);
+    }
+
+    function drawAnimals() {
+      var i;
+
+      for (i = 0; i < animals.length; i++) {
+        animals[i].draw(gc);
+      }
+      if (selected) {
+        var boundX = selected.x - (selected.size / 2);
+        var boundY = selected.y - (selected.size / 2);
+
+        gc.strokeStyle = "#000000";
+        gc.strokeRect(boundX, boundY, selected.size, selected.size);
+
+        document.getElementById("selected").innerHTML =
+          selected.emoji;
+      }
+      document.getElementById("count").innerHTML =
+        animals.length;
+    }
+
+    function drawTrees() {
+      var i;
+
+      for (i = 0; i < trees.length; i++) {
+        trees[i].draw(gc);
+      }
+    }
+
+    function select(event) {
+      var x = event.clientX;
+      var y = event.clientY;
+      var rect = c.getBoundingClientRect();
+      var i;
+      var collide = false;
+      // create(event),
+      for (i = 0; i < animals.length; i++) {
+        var boundX = animals[i].x - (animals[i].size / 2);
+        var boundY = animals[i].y - (animals[i].size / 2);
+
+        if (boundX <= x + rect.left && x + rect.left <= (boundX + animals[i].size) &&
+          boundY <= y - rect.top && y - rect.top <= (boundY + animals[i].size)) {
+
+          selected = animals[i];
+          // selected.IsSelected = true;
+          collide = true;
+          break;
+        }
+      }
+      if (!collide) {
+        create(event);
+        selected = null;
+      }
+      update();
+    }
+
+    function create(event){
+      var rect = c.getBoundingClientRect();
+
+      document.getElementById("statusmsg").innerHTML =
+      "Mouse down at " + event.clientX + ", " + event.clientY;
+
+      // 1. put a random 'animalType' choosed from 'animals' array list into var 'radomAnimal'
+      var animalType = [];
+      animalType.push("Tiger", "Leopard", "Buffalo", "Goat", "Rhino", "Crocodile", "Gorilla", "BabyChick", "Monkey", "Owl", "Ewe", "Eagle", "Pig", "Ox", "Elephant");
+
+      // 2. initialize a choosed animal type & put it in the array list
+      var randomAnimal = animalType[Math.floor(Math.random()*animalType.length)];
+
+      // 3. draw animals at event.clientX, Y --> draw(x, y)
+      var anm;
+      if (randomAnimal == "Tiger") {
+        anm = new Tiger();
+      } else if (randomAnimal == "Leopard") {
+        anm = new Leopard();
+      } else if (randomAnimal == "Buffalo") {
+        anm = new Buffalo();
+      } else if (randomAnimal == "Goat") {
+        anm = new Goat();
+      } else if (randomAnimal == "Rhino") {
+        anm = new Rhino();
+      } else if (randomAnimal == "Crocodile") {
+        anm = new Crocodile();
+      } else if (randomAnimal == "Gorilla") {
+        anm = new Gorilla();
+      } else if (randomAnimal == "BabyChick") {
+        anm = new BabyChick();
+      } else if (randomAnimal == "Monkey") {
+        anm = new Monkey();
+      } else if (randomAnimal == "Owl") {
+        anm = new Owl();
+      } else if (randomAnimal == "Eagle") {
+        anm = new Eagle();
+      } else if (randomAnimal == "Pig") {
+        anm = new Pig();
+      } else if (randomAnimal == "Ox") {
+        anm = new Ox();
+      } else if (randomAnimal == "Ewe") {
+        anm = new Ewe();
+      } else if (randomAnimal == "Elephant") {
+        anm = new Elephant();
+      }
+      animals.push(anm);
+      anm.setPosition(event.clientX - rect.left, event.clientY - rect.top);
+    }
+
+    function update() {
+      drawBackground();
+      drawAnimals();
+      drawTrees();
+    }
+
+
+  </script>
+
+</head>
+
+<body>
+  <div id="title">
+    <h1>Emoji Safari</h1>
+  </div>
+  <canvas id="MyCanvas" onclick="select(event)"></canvas>
+  <div id="buttonarea">
+    &nbsp;
+  </div>
+  <p><b>Status: </b></b><span id = "statusmsg">(Nothing Here)</span></p>
+  <p><b>Animal Count: </b></b><span id = "count">0</span></p>
+  <p><b>Selected Animal: </b></b><span id = "selected" style = "font-size:60px;"></span></p>
+</body>
+
+</html>
